@@ -8,11 +8,11 @@ It will be fun to create a tensor imitation on webgl.
 
 ### Plan of attack
 
-[-] Update the update vertex source file to use two textures as vector fields, u_wind1 and u_wind2.
+* [-] Update the update vertex source file to use two textures as vector fields, u_wind1 and u_wind2.
 
-[-] Create a tensor imitator that automatically changes u_wind1 and u_wind2 as time passes. 
+* [-] Create a tensor imitator that automatically changes u_wind1 and u_wind2 as time passes. 
 
-[-] Connect pieces. 
+* [-] Connect pieces. 
 
 ### Running the demo locally
 
