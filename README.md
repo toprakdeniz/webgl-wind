@@ -2,7 +2,7 @@ Thanks to Volodymyr Agafonkin and everyone who inspires him.
 
 ### Purpose of this fork
 
-Base animation represents a constant time of wind data. One good idea is, as animation continues the time it represents continues. I think it can be done with 2 sequential vector field texture in the update program. We calculate the particul vector with mixing the vectors of two vector field by the ratio of the time passed between the two representation at that point. 
+The basic animation represents a fixed time of wind data. A good idea is to have the time it represents continue as the animation continues. I think it can be done with 2 vector field textures in the update program. We calculate the particle vector by mixing the vectors of two vector fields according to the ratio of the time elapsed between the two representations at that point.
 
 It will be fun to create a tensor imitation on webgl. 
 
