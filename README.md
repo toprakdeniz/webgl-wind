@@ -1,18 +1,16 @@
-## WebGL Wind — [Demo](https://mapbox.github.io/webgl-wind/demo/)
+Thanks to Volodymyr Agafonkin and everyone who inspires him.
 
-A WebGL-powered visualization of wind power.
-Capable of rendering up to 1 million wind particles at 60fps.
+### Purpose of this fork
 
-This project is heavily inspired by the work of:
+Base animation represents a constant time of wind data. One good idea is, as animation continues the time it represents continues. I think it can be done with 2 sequential vector field texture in the update program. We calculate the particul vector with mixing the vectors of two vector field by the ratio of time passed between the two representation at that point. 
 
-- [Cameron Beccario](https://twitter.com/cambecc)
-and his wonderful [Earth project](https://earth.nullschool.net/)
-with its [open-source version](https://github.com/cambecc/earth).
-- [Fernanda Viégas and Martin Wattenberg](http://hint.fm/) and their
-[US Wind Map project](http://hint.fm/projects/wind/).
-- [Chris Wellons](http://nullprogram.com) and his WebGL tutorials,
-in particular [A GPU Approach to Particle Physics](http://nullprogram.com/blog/2014/06/29/).
-- [Greggman](http://games.greggman.com/game/) and his [WebGL Fundamentals](http://webglfundamentals.org/) guide.
+It will be fun to create a tensor imitation on webgl. 
+
+### Plan of attack
+
+[-] Update the update vertex source file to use two textures as vector fields, u_wind1 and u_wind2.
+[-] Create a tensor imitator that automatically changes u_wind1 and u_wind2 as time passes. 
+[-] Connect pieces. 
 
 ### Running the demo locally
 
