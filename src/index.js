@@ -38,7 +38,23 @@ export default class WindGL {
 
         this.setColorRamp(defaultRampColors);
         this.resize();
+
+
+        this._animationTime = 0;
+        this._animationDuration = 10;
     }
+
+    set animationPercentage(value) {
+        this._animationTime = this._animationDuration * value;
+    }
+
+    set animationDuration(value) {
+
+        this._animationTime = value * this._animationTime / this._animationDuration;
+        this._animationDuration = value;
+    }
+
+
 
     resize() {
         const gl = this.gl;
@@ -76,9 +92,16 @@ export default class WindGL {
         return this._numParticles;
     }
 
-    setWind(windData) {
-        this.windData = windData;
-        this.windTexture = util.createTexture(this.gl, this.gl.LINEAR, windData.image);
+    setWind(windDatas) {
+        this.windDatas = windDatas;
+
+        this.windTexture1 = util.createTexture(this.gl, this.gl.LINEAR, windData[0].image);
+        this.windTexture2 = util.createTexture(this.gl, this.gl.LINEAR, windData[1].image);
+    }
+
+    arrangeWindData(){
+        const l = this.windDatas.length;
+
     }
 
     draw() {
@@ -175,6 +198,9 @@ export default class WindGL {
         this.particleStateTexture0 = this.particleStateTexture1;
         this.particleStateTexture1 = temp;
     }
+
+
+
 }
 
 function getColorRamp(colors) {
