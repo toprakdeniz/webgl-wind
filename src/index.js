@@ -41,19 +41,9 @@ export default class WindGL {
 
 
         this._animationTime = 0;
-        this._animationDuration = 10;
+        this._animationDuration = 0;
+        this._phase = 0;
     }
-
-    set animationPercentage(value) {
-        this._animationTime = this._animationDuration * value;
-    }
-
-    set animationDuration(value) {
-
-        this._animationTime = value * this._animationTime / this._animationDuration;
-        this._animationDuration = value;
-    }
-
 
 
     resize() {
@@ -95,8 +85,16 @@ export default class WindGL {
     setWind(windDatas) {
         this.windDatas = windDatas;
 
-        this.windTexture1 = util.createTexture(this.gl, this.gl.LINEAR, windData[0].image);
-        this.windTexture2 = util.createTexture(this.gl, this.gl.LINEAR, windData[1].image);
+        this.windTextures = [];
+        for (let i = 0; i < windDatas.length; i++) {
+            const windData = windDatas[i];
+            const windTexture = util.createTexture(this.gl, this.gl.NEAREST, windData.data, windData.width, windData.height);
+            this.windTextures.push(windTexture);
+        }
+        this.wind1 = this.windTextures[0];
+        this.wind2 = this.windTextures[1];
+        
+        this._animationDuration = windDatas.length;
     }
 
     arrangeWindData(){
@@ -156,6 +154,8 @@ export default class WindGL {
         const program = this.drawProgram;
         gl.useProgram(program.program);
 
+        const windData = this.windDatas[this._texture1_index];
+
         util.bindAttribute(gl, this.particleIndexBuffer, program.a_index, 1);
         util.bindTexture(gl, this.colorRampTexture, 2);
 
@@ -164,8 +164,8 @@ export default class WindGL {
         gl.uniform1i(program.u_color_ramp, 2);
 
         gl.uniform1f(program.u_particles_res, this.particleStateResolution);
-        gl.uniform2f(program.u_wind_min, this.windData.uMin, this.windData.vMin);
-        gl.uniform2f(program.u_wind_max, this.windData.uMax, this.windData.vMax);
+        gl.uniform2f(program.u_wind_min, windData.uMin, windData.vMin);
+        gl.uniform2f(program.u_wind_max, windData.uMax, windData.vMax);
 
         gl.drawArrays(gl.POINTS, 0, this._numParticles);
     }
@@ -174,6 +174,9 @@ export default class WindGL {
         const gl = this.gl;
         util.bindFramebuffer(gl, this.framebuffer, this.particleStateTexture1);
         gl.viewport(0, 0, this.particleStateResolution, this.particleStateResolution);
+
+        const windData1 = this.windDatas[this._texture1_index];
+        const windData2 = this.windDatas[this._texture2_index];
 
         const program = this.updateProgram;
         gl.useProgram(program.program);
@@ -184,9 +187,13 @@ export default class WindGL {
         gl.uniform1i(program.u_particles, 1);
 
         gl.uniform1f(program.u_rand_seed, Math.random());
-        gl.uniform2f(program.u_wind_res, this.windData.width, this.windData.height);
-        gl.uniform2f(program.u_wind_min, this.windData.uMin, this.windData.vMin);
-        gl.uniform2f(program.u_wind_max, this.windData.uMax, this.windData.vMax);
+        gl.uniform2f(program.u_wind_res1, windData1.width, windData1.height);
+        gl.uniform2f(program.u_wind_min1, windData1.uMin, windData1.vMin);
+        gl.uniform2f(program.u_wind_max1, windData1.uMax, windData1.vMax);
+        gl.uniform2f(program.u_wind_res2, windData2.width, windData2.height);
+        gl.uniform2f(program.u_wind_min2, windData2.uMin, windData2.vMin);
+        gl.uniform2f(program.u_wind_max2, windData2.uMax, windData2.vMax);
+
         gl.uniform1f(program.u_speed_factor, this.speedFactor);
         gl.uniform1f(program.u_drop_rate, this.dropRate);
         gl.uniform1f(program.u_drop_rate_bump, this.dropRateBump);
@@ -199,7 +206,15 @@ export default class WindGL {
         this.particleStateTexture1 = temp;
     }
 
-
+    _timeTick() {
+        this._animationTime += 0.06;
+        if (this._animationTime > this._animationDuration) {
+            this._animationTime = 0;
+        }
+        this._phase = this._animationTime % 1.0;
+        this._texture1_index = Math.floor(this._animationTime);
+        this._texture2_index = (this._texture1_index + 1);
+    }
 
 }
 
